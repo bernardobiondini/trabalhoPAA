@@ -7,23 +7,45 @@ public class Main {
         int[] nums = {1, 2, 3};
         int[] arr = {35, 34, 33, 23, 21, 32, 35, 19, 26, 42};
 
-        List<List<Integer>> backtrackResult = new ArrayList<>();
-        Backtracking.backtrack(backtrackResult, new ArrayList<>(), nums);
-        System.out.println(backtrackResult);
-
         int numTrucks = 3;
         int minRoutes = 6;
-        int maxRoutes = 10;
-        int maxTime = 30000; // 30 seconds
+        int maxRoutes = 1000;
+        int maxTime = 30; // 30 seconds
         double dispersion = 0.5;
 
-        routesAverage(numTrucks, minRoutes, maxRoutes, maxTime, dispersion);
-        printBacktrackingResult(backtrackResult);
-        greedyStrategy1(numTrucks, minRoutes, maxRoutes, maxTime, dispersion);
-        greedyStrategy2(numTrucks, minRoutes, maxRoutes, maxTime, dispersion);
-        mergeSortAndPrint(arr, numTrucks);
-        dynamicProgrammingAndPrint(arr, numTrucks);
+        backtrackingStrategy(numTrucks, minRoutes, maxRoutes, maxTime, dispersion);
 
+        // routesAverage(numTrucks, minRoutes, maxRoutes, maxTime, dispersion);
+        // printBacktrackingResult(backtrackResult);
+        // greedyStrategy1(numTrucks, minRoutes, maxRoutes, maxTime, dispersion);
+        // greedyStrategy2(numTrucks, minRoutes, maxRoutes, maxTime, dispersion);
+        // mergeSortAndPrint(arr, numTrucks);
+        // dynamicProgrammingAndPrint(arr, numTrucks);
+
+    }
+
+    public static void backtrackingStrategy(int numTrucks, int minRoutes, int maxRoutes, int maxTime, double dispersion) {
+        for (int i = minRoutes; i <= maxRoutes; i ++) {
+            List<int[]> rotas = GeradorDeProblemas.geracaoDeRotas(i, 10, dispersion);
+    
+            long totalTime = 0;
+            List<List<Integer>> result = new ArrayList<>();
+    
+            for (int j = 0; j < 10; j++) {
+                long startTime = System.currentTimeMillis();
+                Backtracking.main(rotas.get(j), numTrucks);
+                long endTime = System.currentTimeMillis();
+                totalTime += endTime - startTime;
+            }
+    
+            double averageTime = totalTime / 10.0;
+    
+            if (averageTime > maxTime) {
+                break;
+            }
+    
+            System.out.println("Tempo de execução médio backtracking para " + i + " rotas: " + averageTime);
+        }
     }
 
     public static void routesAverage(int numTrucks, int minRoutes, int maxRoutes, int maxTime, double dispersion) {
@@ -59,7 +81,7 @@ public class Main {
     }
 
     public static void greedyStrategy1(int numTrucks, int minRoutes, int maxRoutes, int maxTime, double dispersion) {
-        for (int i = minRoutes; i <= maxRoutes; i += minRoutes) {
+        for (int i = minRoutes; i <= maxRoutes; i ++) {
             List<int[]> rotas = GeradorDeProblemas.geracaoDeRotas(i, 10, dispersion);
     
             long totalTime = 0;
@@ -83,7 +105,7 @@ public class Main {
     }
     
     public static void greedyStrategy2(int numTrucks, int minRoutes, int maxRoutes, int maxTime, double dispersion) {
-        for (int i = minRoutes; i <= maxRoutes; i += minRoutes) {
+        for (int i = minRoutes; i <= maxRoutes; i ++) {
             List<int[]> rotas = GeradorDeProblemas.geracaoDeRotas(i, 10, dispersion);
     
             long totalTime = 0;
