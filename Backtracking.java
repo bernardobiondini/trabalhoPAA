@@ -24,18 +24,18 @@ public class Backtracking {
 
         for(int i = 0; i < routes.length; i++) {
             for(int j = i + 1; j < routes.length; j++) {
-                Backtracking.backtrack(routes, i, j, 0, media, 10, backtrackResult, new ArrayList<>());
+                Backtracking.backtrack(routes, i, j, 0, media, 5, backtrackResult, new ArrayList<>());
             }
         }
 
-        // List<List<Backtracking>> resultado = encontrarSequenciasNaoRepetidas(backtrackResult);
+        // List<List<Backtracking>> resultado = encontrarSequenciasNaoRepetidas(backtrackResult, trucks);
 
-        // for (List<Backtracking> list : backtrackResult) {
-        //     for (Backtracking list2 : list) {
-        //         System.out.print("(" + list2.value + "," + list2.position + ")");
-        //     }
-        //     System.out.println();
-        // }
+        for (List<Backtracking> list : backtrackResult) {
+            for (Backtracking list2 : list) {
+                System.out.print("(" + list2.value + "," + list2.position + ")");
+            }
+            System.out.println();
+        }
     }
 
     public static void backtrack(int[] routes, int pos, int prox, int sum, int avg, int diff, List<List<Backtracking>> options, List<Backtracking> sub) {
@@ -57,26 +57,43 @@ public class Backtracking {
         }
     }
 
-    public static List<List<Backtracking>> encontrarSequenciasNaoRepetidas(List<List<Backtracking>> sequencias) {
+    public static List<List<Backtracking>> encontrarSequenciasNaoRepetidas(List<List<Backtracking>> sequencias, int numTrucks) {
+        int cont = 0;
         List<List<Backtracking>> resultado = new ArrayList<>();
         Set<Backtracking> tuplasUsadas = new HashSet<>();
 
-        for (List<Backtracking> sequencia : sequencias) {
-            boolean sequenciaValida = true;
+        while(resultado.size() < numTrucks && cont < sequencias.size()) {
+            resultado.clear();
+            tuplasUsadas.clear();
+            for (int i = cont; i < sequencias.size(); i++) {
 
-            for (Backtracking b : sequencia) {
-                if (tuplasUsadas.contains(b)) {
-                    sequenciaValida = false;
-                    break;
+                boolean sequenciaValida = true;
+
+                for (Backtracking b : sequencias.get(i)) {
+                    if (containsTupla(b, tuplasUsadas)) {
+                        sequenciaValida = false;
+                        break;
+                    }
+                }
+
+                if (sequenciaValida) {
+                    resultado.add(sequencias.get(i));
+                    tuplasUsadas.addAll(sequencias.get(i));
                 }
             }
-
-            if (sequenciaValida) {
-                resultado.add(sequencia);
-                tuplasUsadas.addAll(sequencia);
-            }
+            cont++;
         }
 
         return resultado;
+    }
+
+    public static boolean containsTupla(Backtracking b, Set<Backtracking> list) {
+        for(Backtracking c : list) {
+            if (c.value == b.value && c.position == b.position) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

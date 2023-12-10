@@ -6,14 +6,17 @@ public class Main {
     public static void main(String[] args) {
         int[] nums = {1, 2, 3};
         int[] arr = {35, 34, 33, 23, 21, 32, 35, 19, 26, 42};
+        int[] arr2 = {40,36,38,29,32,28,31,35,31,30,32,30,29,39,35,38,39,35,32,38,32,33,29,33,32,39,28};
 
         int numTrucks = 3;
         int minRoutes = 6;
-        int maxRoutes = 1000;
+        int maxRoutes = 6;
         int maxTime = 30; // 30 seconds
         double dispersion = 0.5;
 
-        backtrackingStrategy(numTrucks, minRoutes, maxRoutes, maxTime, dispersion);
+        Backtracking.main(arr2, numTrucks);
+
+        // backtrackingStrategy(numTrucks, minRoutes, maxRoutes, maxTime, dispersion);
 
         // routesAverage(numTrucks, minRoutes, maxRoutes, maxTime, dispersion);
         // printBacktrackingResult(backtrackResult);
@@ -33,7 +36,9 @@ public class Main {
     
             for (int j = 0; j < 10; j++) {
                 long startTime = System.currentTimeMillis();
+                System.out.println("-------------------------------------");
                 Backtracking.main(rotas.get(j), numTrucks);
+                System.out.println("-------------------------------------");
                 long endTime = System.currentTimeMillis();
                 totalTime += endTime - startTime;
             }
