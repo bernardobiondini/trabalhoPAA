@@ -1,26 +1,96 @@
 import java.util.List;
+import java.util.Set;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Backtracking {
-    public static void main(String[] args) {
-        int[] nums = {1, 2, 3};
-        List<List<Integer>> result = new ArrayList<>();
-        backtrack(result, new ArrayList<>(), nums);
-        System.out.println(result);
+
+    public int position;
+    public int value;
+
+    public Backtracking(int position, int value) {
+        this.position = position;
+        this.value = value;
     }
 
-    public static void backtrack(List<List<Integer>> result, List<Integer> tempList, int[] nums) {
-        if (tempList.size() == nums.length) {
-            result.add(new ArrayList<>(tempList));
-        } else {
-            for (int i = 0; i < nums.length; i++) {
-                if (tempList.contains(nums[i])) {
-                    continue;
-                }
-                tempList.add(nums[i]);
-                backtrack(result, tempList, nums);
-                tempList.remove(tempList.size() - 1);
+    public static List<List<Backtracking>> main(int[] routes, int trucks) {
+        List<List<Backtracking>> backtrackResult = new ArrayList<>();
+        int media = 0;
+        for(int i = 0; i < routes.length; i++) {
+            media += routes[i];
+        }
+        media /= trucks;
+
+        for(int i = 0; i < routes.length; i++) {
+            for(int j = i + 1; j < routes.length; j++) {
+                Backtracking.backtrack(routes, i, j, 0, media, 10, backtrackResult, new ArrayList<>());
             }
         }
+
+        List<List<Backtracking>> resultado = encontrarSequenciasNaoRepetidas(backtrackResult, trucks);
+
+        return resultado;
+    }
+
+    public static void backtrack(int[] routes, int pos, int prox, int sum, int avg, int diff, List<List<Backtracking>> options, List<Backtracking> sub) {
+        if(pos == routes.length) return;
+
+        int addition = sum + routes[pos];
+
+        if(addition < (avg - diff)) {
+            sub.add(new Backtracking(pos, routes[pos]));
+            backtrack(routes, prox, prox + 1, addition, avg, diff, options, sub);
+        } else if(addition > (avg + diff)) {
+            return;
+        } else {
+            sub.add(new Backtracking(pos, routes[pos]));
+            options.add(sub);
+            return;
+        }
+    }
+
+    public static List<List<Backtracking>> encontrarSequenciasNaoRepetidas(List<List<Backtracking>> sequencias, int numTrucks) {
+        int cont = 0;
+        List<List<Backtracking>> resultado = new ArrayList<>();
+        Set<Backtracking> tuplasUsadas = new HashSet<>();
+
+        while(resultado.size() < numTrucks && cont < sequencias.size()) {
+            resultado.clear();
+            tuplasUsadas.clear();
+            for (int i = cont; i < sequencias.size(); i++) {
+
+                boolean sequenciaValida = true;
+
+                for (Backtracking b : sequencias.get(i)) {
+                    if (containsTupla(b, tuplasUsadas)) {
+                        sequenciaValida = false;
+                        break;
+                    }
+                }
+
+                if (sequenciaValida) {
+                    resultado.add(sequencias.get(i));
+                    tuplasUsadas.addAll(sequencias.get(i));
+                }
+            }
+
+            cont++;
+        }
+
+        return resultado;
+    }
+
+    public static boolean containsTupla(Backtracking b, Set<Backtracking> list) {
+        for(Backtracking c : list) {
+            if (c.value == b.value && c.position == b.position) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public String toString() {
+        return "(" + this.value + "," + this.position + ")";
     }
 }
