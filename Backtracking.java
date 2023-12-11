@@ -13,36 +13,29 @@ public class Backtracking {
         this.value = value;
     }
 
-    public static void main(int[] routes, int trucks) {
+    public static List<List<Backtracking>> main(int[] routes, int trucks) {
         List<List<Backtracking>> backtrackResult = new ArrayList<>();
         int media = 0;
         for(int i = 0; i < routes.length; i++) {
             media += routes[i];
         }
         media /= trucks;
-        // System.out.println(media);
 
         for(int i = 0; i < routes.length; i++) {
             for(int j = i + 1; j < routes.length; j++) {
-                Backtracking.backtrack(routes, i, j, 0, media, 5, backtrackResult, new ArrayList<>());
+                Backtracking.backtrack(routes, i, j, 0, media, 10, backtrackResult, new ArrayList<>());
             }
         }
 
-        // List<List<Backtracking>> resultado = encontrarSequenciasNaoRepetidas(backtrackResult, trucks);
+        List<List<Backtracking>> resultado = encontrarSequenciasNaoRepetidas(backtrackResult, trucks);
 
-        for (List<Backtracking> list : backtrackResult) {
-            for (Backtracking list2 : list) {
-                System.out.print("(" + list2.value + "," + list2.position + ")");
-            }
-            System.out.println();
-        }
+        return resultado;
     }
 
     public static void backtrack(int[] routes, int pos, int prox, int sum, int avg, int diff, List<List<Backtracking>> options, List<Backtracking> sub) {
         if(pos == routes.length) return;
 
         int addition = sum + routes[pos];
-        // System.out.println("Addition: " + addition);
 
         if(addition < (avg - diff)) {
             sub.add(new Backtracking(pos, routes[pos]));
@@ -50,7 +43,6 @@ public class Backtracking {
         } else if(addition > (avg + diff)) {
             return;
         } else {
-            // System.out.println("Colocando " + routes[pos]);
             sub.add(new Backtracking(pos, routes[pos]));
             options.add(sub);
             return;
@@ -81,6 +73,7 @@ public class Backtracking {
                     tuplasUsadas.addAll(sequencias.get(i));
                 }
             }
+
             cont++;
         }
 
@@ -95,5 +88,9 @@ public class Backtracking {
         }
 
         return false;
+    }
+
+    public String toString() {
+        return "(" + this.value + "," + this.position + ")";
     }
 }
